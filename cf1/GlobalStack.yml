@@ -1,0 +1,13 @@
+Resources:
+  DummySQSQueue:
+    Type: "AWS::SQS::Queue"
+
+Outputs:
+  SpringEnvironment: 
+    Value: "prod"
+    Export: 
+      Name: SpringEnvironment
+  ChefEnvironment: 
+    Value: "prd"
+    Export:
+      Name: ChefEnvironment
