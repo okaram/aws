@@ -19,6 +19,7 @@ Resources:
       ReceiveMessageWaitTimeSeconds: 0 # don't wait to see if more messages appear
       VisibilityTimeout: 30
       RedrivePolicy:
-        deadLetterTargetArn: !GetAtt DeadLetterQueue.Arn
+        deadLetterTargetArn: !Sub "arn:aws:sqs:${AWS::Region}:${AWS::AccountId}:DeadLetterQueue"
+        # !GetAtt DeadLetterQueue.Arn
         #!Join [":", ["arn:aws:sqs", !Ref "AWS::Region",  !Ref "AWS::AccountId", "DeadLetterQueue1"]]
         maxReceiveCount: 2

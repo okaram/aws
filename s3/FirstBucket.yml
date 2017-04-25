@@ -1,0 +1,19 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: My s3 buckets
+Resources:
+  FirstS3Bucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    Properties:
+      VersioningConfiguration:
+        Status: Enabled
+      BucketName: okaram-first-s3-bucket
+      CorsConfiguration:
+        CorsRules:
+          -
+            AllowedOrigins:
+              - 
+                '*'
+            AllowedMethods:
+              -
+                'GET'

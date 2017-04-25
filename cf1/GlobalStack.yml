@@ -1,6 +1,8 @@
 Resources:
   DummySQSQueue:
     Type: "AWS::SQS::Queue"
+    Properties:
+      DelaySeconds: 0               # How long to delay messages
 
 Outputs:
   SpringEnvironment: 
@@ -11,3 +13,7 @@ Outputs:
     Value: "prd"
     Export:
       Name: ChefEnvironment
+  DummyQueueArn:
+    Value: !GetAtt DummySQSQueue.Arn
+    Export:
+      Name: DummyQueueArn

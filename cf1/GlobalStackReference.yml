@@ -1,0 +1,9 @@
+Resources:
+  DummySQSQueue:
+    Type: "AWS::SQS::Queue"
+
+Outputs:
+  DummyQueueArn:
+    Value: !ImportValue DummyQueueArn
+    Export:
+      Name: DummyQueueArn2
