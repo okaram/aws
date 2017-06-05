@@ -1,0 +1,33 @@
+= S3 - Simple Storage Service
+:toc: left
+:sourcedir: /Users/curri/projects/aws/s3
+:source-highlighter: pygments
+
+AWS S3 allows us to store and retrieve files in the cloud; we have cheap and virtually unlimited space.
+
+S3 stores files in *buckets*, which have a globally-unique name; we can create a bucket using cloudformation; 
+
+== creating the bucket
+
+the simplest cloudformation template would be as follows (replace the bucket name)
+
+[source,YAML]
+.Simplest yml bucket
+----
+include::{sourcedir}/SimplestBucket.yml[]
+----
+
+== Downloading a file
+[source,Groovy]
+.download.groovy
+----
+include::{sourcedir}/download.groovy[]
+----
+
+== Uploading a file
+[source,groovy]
+.download.groovy
+----
+include::{sourcedir}/upload.groovy[]
+----
+

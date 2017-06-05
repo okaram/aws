@@ -5,10 +5,15 @@ Resources:
       DelaySeconds: 0               # How long to delay messages
       MaximumMessageSize: 1024      # in bytes
       MessageRetentionPeriod: 3600  # in seconds; let's use an hour, just for fun 
-      QueueName: FirstQueue.fifo
+      QueueName: FirstQueue
       ReceiveMessageWaitTimeSeconds: 0 # don't wait to see if more messages appear
       VisibilityTimeout: 30
-      FifoQueue: 1
+Outputs:
+  Queue:
+    Description: The Queue ARN
+    Value: !GetAtt FirstQueue.Arn
+    Export:
+      Name: TheQueueArn
 #    RedrivePolicy:
 #      deadLetterTargetArn:
 #      maxReceiveCount: 2
