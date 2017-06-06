@@ -1,48 +1,31 @@
-= S3 - Simple Storage Service
+= SQS - Simple Queue Service
 :toc: left
-:sourcedir: /Users/curri/projects/aws/s3
+:sourcedir: /Users/curri/projects/aws/sqs
 :source-highlighter: pygments
 
-AWS S3 allows us to store and retrieve files in the cloud; we have cheap and virtually unlimited space.
+AWS SQS allows programs to send messages to a queue, and other programs to read those messages and act on them; the programs can communicate, but are only loosely coupled, and may not even be running at the same time.
 
-S3 stores files in *buckets*, which have a globally-unique name; we can create a bucket using cloudformation; 
+== creating the Queue
 
-== creating the bucket
-
-the simplest cloudformation template would be as follows (remember the bucket name has to be unique, so replace it with a name of your own if you run this). 
+A simples cloudformation template would be as follows: 
 
 [source,YAML]
-.Simplest yml bucket
+.Simples SQS queue
 ----
-include::{sourcedir}/SimplestBucket.yml[]
+include::{sourcedir}/SimpleQueue.yml[]
 ----
 
-== Downloading a file
+== Sending messages
 [source,Groovy]
-.download.groovy
+.Sending.groovy
 ----
-include::{sourcedir}/download.groovy[]
+include::{sourcedir}/enqueue.groovy[]
 ----
 
-== Uploading a file
+== Receiving messages
 [source,groovy]
-.download.groovy
+.dequeue.groovy
 ----
-include::{sourcedir}/upload.groovy[]
-----
-
-== Bucket with web configuration and authorization for everybody to read
-[source,YAML]
-.Bucket with web configuration and a policy allowing anybody to read 
-----
-include::{sourcedir}/FirstBucket.yml[]
+include::{sourcedir}/dequeue.groovy[]
 ----
 
-== Listing all files in a bucket
-
-S3 does not really 
-[source,Groovy]
-.ls.groovy
-----
-include::{sourcedir}/ls.groovy[]
-----
