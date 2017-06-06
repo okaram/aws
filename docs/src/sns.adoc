@@ -1,0 +1,28 @@
+= SNS - Simple Notification Service
+:toc: left
+:sourcedir: /Users/curri/projects/aws/sns
+:source-highlighter: pygments
+
+AWS SNS allows us to send a message to a notification topic, and have that message propagated to 
+
+* SQS queues
+* Email
+* Mobile
+* Text Messages
+
+== creating the topic
+
+A simple SNS topic can be done with the following Cloudformation template:
+[source,YAML]
+.Simple SNS topic
+----
+include::{sourcedir}/SnsTopic.yml[]
+----
+
+== Publishing to a topic
+[source,Groovy]
+.publish.groovy
+----
+include::{sourcedir}/publish.groovy[]
+----
+
