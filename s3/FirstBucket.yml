@@ -17,3 +17,20 @@ Resources:
             AllowedMethods:
               -
                 'GET'
+      WebsiteConfiguration:
+        ErrorDocument: String
+        IndexDocument: String
+  AllReadBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      PolicyDocument:
+        Id: MyPolicy
+        Version: '2012-10-17'
+        Statement:
+        - Sid: ReadAccess
+          Action:
+            - s3:GetObject
+          Effect: Allow
+          Resource: 'arn:aws:s3:::okaram-first-s3-bucket/*'
+          Principal: '*'
+      Bucket: !Ref FirstS3Bucket

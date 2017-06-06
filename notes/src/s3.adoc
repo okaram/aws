@@ -9,7 +9,7 @@ S3 stores files in *buckets*, which have a globally-unique name; we can create a
 
 == creating the bucket
 
-the simplest cloudformation template would be as follows (replace the bucket name)
+the simplest cloudformation template would be as follows (remember the bucket name has to be unique, so replace it with a name of your own if you run this). 
 
 [source,YAML]
 .Simplest yml bucket
@@ -31,3 +31,18 @@ include::{sourcedir}/download.groovy[]
 include::{sourcedir}/upload.groovy[]
 ----
 
+== Bucket with web configuration and authorization for everybody to read
+[source,YAML]
+.Bucket with web configuration and a policy allowing anybody to read 
+----
+include::{sourcedir}/FirstBucket.yml[]
+----
+
+== Listing all files in a bucket
+
+S3 does not really 
+[source,Groovy]
+.ls.groovy
+----
+include::{sourcedir}/ls.groovy[]
+----

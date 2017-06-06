@@ -28,7 +28,7 @@ while(true){
                 "(size = " + objectSummary.getSize() + 
                 ")");
     }
-    System.out.println("Next Continuation Token : " + result.getNextContinuationToken());
+//    System.out.println("Next Continuation Token : " + result.getNextContinuationToken());
     req.setContinuationToken(result.getNextContinuationToken());
     if(!result.isTruncated())
       break;
