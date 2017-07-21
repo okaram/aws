@@ -5,10 +5,12 @@
 import org.slf4j.*
 
 @Grab('com.amazonaws:aws-java-sdk-core:1.10.0')
+import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
+
+@GrabConfig(systemClassLoader=true)
 @Grab('com.amazonaws:amazon-kinesis-producer:+')
 import com.amazonaws.services.kinesis.producer.*
 
-import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
 
 import java.nio.ByteBuffer;
 KinesisProducerConfiguration config=new KinesisProducerConfiguration();
