@@ -35,6 +35,8 @@ include::{sourcedir}/download.groovy[]
 ----
 
 == Uploading a file
+
+Uploading through S3Client directly involves uploading a file in several parts, and then assembling the parts, which makes it much more convenient to use a http://docs.aws.amazon.com/AWSJavaSDK/latest/javadoc/com/amazonaws/services/s3/transfer/TransferManager.html[`TransferManager`], which takes care of breaking the file in parts and uploading all the parts (you can also use it to download files). A simple file uploader would look as follows:
 [source,groovy]
 .download.groovy
 ----

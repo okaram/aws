@@ -581,6 +581,9 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="sect1">
 <h2 id="_uploading_a_file">3. Uploading a file</h2>
 <div class="sectionbody">
+<div class="paragraph">
+<p>Uploading through S3Client directly involves uploading a file in several parts, and then assembling the parts, which makes it much more convenient to use a <a href="http://docs.aws.amazon.com/AWSJavaSDK/latest/javadoc/com/amazonaws/services/s3/transfer/TransferManager.html"><code>TransferManager</code></a>, which takes care of breaking the file in parts and uploading all the parts (you can also use it to download files). A simple file uploader would look as follows:</p>
+</div>
 <div class="listingblock">
 <div class="title">download.groovy</div>
 <div class="content">
@@ -705,7 +708,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-07-21 00:27:50 EDT
+Last updated 2017-07-21 00:43:17 EDT
 </div>
 </div>
 </body>
