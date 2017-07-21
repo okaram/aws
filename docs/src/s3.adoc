@@ -62,3 +62,9 @@ include::{sourcedir}/ls.groovy[]
 include::{sourcedir}/FirstBucket.yml[]
 ----
 
+== TODO
+
+* ls with folders, withDelimiter/withPrefix , getCommonPrefixes
+* Permission policies with CF
+* Deletion policies etc
+* Temporary access URLs
