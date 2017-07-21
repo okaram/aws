@@ -545,7 +545,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <p>AWS provides a REST API for most of its services, and the Java SDK tends to wrap that API with a common pattern; you have a client interface and class, and methods that take request objects.</p>
 </div>
 <div class="paragraph">
-<p>For S3, the client interface is <code>AmazonS3</code> and the client class is <a href="http://docs.aws.amazon.com/AWSJavaSDK/latest/javadoc/com/amazonaws/services/s3/AmazonS3Client.html"><code>AmazonS3Client</code></a> (there&#8217;s also an <code>AmazonS3ClientAsync</code>, with more capabilities). We create a <code>GetObjectRequest', specifying the bucket and the file name, and then  call `getObject</code> on the client.</p>
+<p>For S3, the client interface is <a href="http://docs.aws.amazon.com/AWSJavaSDK/latest/javadoc/com/amazonaws/services/s3/AmazonS3.html"><code>AmazonS3</code></a> and the client class is <a href="http://docs.aws.amazon.com/AWSJavaSDK/latest/javadoc/com/amazonaws/services/s3/AmazonS3Client.html"><code>AmazonS3Client</code></a>. We create a <a href="http://docs.aws.amazon.com/AWSJavaSDK/latest/javadoc/com/amazonaws/services/s3/model/GetObjectRequest.html"><code>GetObjectRequest'</a>, specifying the bucket and the file name, and then  call `getObject</code> on the client.</p>
 </div>
 <div class="paragraph">
 <p>For our groovy code, we use <a href="http://docs.groovy-lang.org/latest/html/documentation/grape.html">@Grab</a> to download the sdk parts we need; We can download the full java sdk, or just the pieces we need; for this example, I&#8217;m just using <code>'com.amazonaws:aws-java-sdk-s3'</code>.</p>
@@ -569,6 +569,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <span class="tok-n">AmazonS3</span> <span class="tok-n">s3Client</span> <span class="tok-o">=</span> <span class="tok-k">new</span> <span class="tok-n">AmazonS3Client</span><span class="tok-o">();</span>
 <span class="tok-n">GetObjectRequest</span> <span class="tok-n">request</span><span class="tok-o">=</span> <span class="tok-k">new</span> <span class="tok-n">GetObjectRequest</span><span class="tok-o">(</span><span class="tok-n">bucketName</span><span class="tok-o">,</span> <span class="tok-n">remoteFileName</span><span class="tok-o">);</span>
 <span class="tok-n">S3Object</span> <span class="tok-n">object</span> <span class="tok-o">=</span> <span class="tok-n">s3Client</span><span class="tok-o">.</span><span class="tok-na">getObject</span><span class="tok-o">(</span><span class="tok-n">request</span><span class="tok-o">);</span>
+<span class="tok-c1">// s3Client also has a getObject that directly takes the bucket and file names, if you prefer</span>
 
 <span class="tok-n">InputStream</span> <span class="tok-n">objectData</span> <span class="tok-o">=</span> <span class="tok-n">object</span><span class="tok-o">.</span><span class="tok-na">getObjectContent</span><span class="tok-o">();</span>
 <span class="tok-n">objectData</span><span class="tok-o">.</span><span class="tok-na">eachLine</span> <span class="tok-o">{</span> <span class="tok-n">line</span> <span class="tok-o">-&gt;</span> <span class="tok-n">println</span><span class="tok-o">(</span><span class="tok-n">line</span><span class="tok-o">)}</span>
@@ -601,8 +602,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <span class="tok-c1">// this blocks until the transfer is done</span>
 <span class="tok-n">upload</span><span class="tok-o">.</span><span class="tok-na">waitForCompletion</span><span class="tok-o">();</span>
 <span class="tok-n">System</span><span class="tok-o">.</span><span class="tok-na">out</span><span class="tok-o">.</span><span class="tok-na">println</span><span class="tok-o">(</span><span class="tok-s2">&quot;Upload complete.&quot;</span><span class="tok-o">);</span>
-<span class="tok-c1">// the TransferManager creates a thread, so if we don&#39;t exit it will run forever</span>
-<span class="tok-n">System</span><span class="tok-o">.</span><span class="tok-na">exit</span><span class="tok-o">(</span><span class="tok-mi">0</span><span class="tok-o">);</span></code></pre>
+<span class="tok-c1">// the TransferManager creates threads, so if we don&#39;t exit it will run forever</span>
+<span class="tok-n">tm</span><span class="tok-o">.</span><span class="tok-na">shutdownNow</span><span class="tok-o">();</span></code></pre>
 </div>
 </div>
 </div>
@@ -704,7 +705,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-07-21 00:20:54 EDT
+Last updated 2017-07-21 00:27:50 EDT
 </div>
 </div>
 </body>

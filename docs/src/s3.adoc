@@ -23,7 +23,7 @@ include::{sourcedir}/SimplestBucket.yml[]
 
 AWS provides a REST API for most of its services, and the Java SDK tends to wrap that API with a common pattern; you have a client interface and class, and methods that take request objects.
 
-For S3, the client interface is `AmazonS3` and the client class is http://docs.aws.amazon.com/AWSJavaSDK/latest/javadoc/com/amazonaws/services/s3/AmazonS3Client.html[`AmazonS3Client`] (there's also an `AmazonS3ClientAsync`, with more capabilities). We create a `GetObjectRequest', specifying the bucket and the file name, and then  call `getObject` on the client.
+For S3, the client interface is http://docs.aws.amazon.com/AWSJavaSDK/latest/javadoc/com/amazonaws/services/s3/AmazonS3.html[`AmazonS3`] and the client class is http://docs.aws.amazon.com/AWSJavaSDK/latest/javadoc/com/amazonaws/services/s3/AmazonS3Client.html[`AmazonS3Client`]. We create a http://docs.aws.amazon.com/AWSJavaSDK/latest/javadoc/com/amazonaws/services/s3/model/GetObjectRequest.html[`GetObjectRequest'], specifying the bucket and the file name, and then  call `getObject` on the client.
 
 For our groovy code, we use http://docs.groovy-lang.org/latest/html/documentation/grape.html[@Grab] to download the sdk parts we need; We can download the full java sdk, or just the pieces we need; for this example, I'm just using `'com.amazonaws:aws-java-sdk-s3'`.
 
