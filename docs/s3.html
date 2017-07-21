@@ -545,7 +545,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <p>AWS provides a REST API for most of its services, and the Java SDK tends to wrap that API with a common pattern; you have a client interface and class, and methods that take request objects.</p>
 </div>
 <div class="paragraph">
-<p>For S3, the client interface is <code>AmazonS3</code> and the client class is <code>AmazonS3Client</code> (there&#8217;s also an <code>AmazonS3ClientAsync</code>, with more capabilities). We create a <code>GetObjectRequest', specifying the bucket and the file name, and then  call `getObject</code> on the client.</p>
+<p>For S3, the client interface is <code>AmazonS3</code> and the client class is <a href="http://docs.aws.amazon.com/AWSJavaSDK/latest/javadoc/com/amazonaws/services/s3/AmazonS3Client.html"><code>AmazonS3Client</code></a> (there&#8217;s also an <code>AmazonS3ClientAsync</code>, with more capabilities). We create a <code>GetObjectRequest', specifying the bucket and the file name, and then  call `getObject</code> on the client.</p>
 </div>
 <div class="paragraph">
 <p>For our groovy code, we use <a href="http://docs.groovy-lang.org/latest/html/documentation/grape.html">@Grab</a> to download the sdk parts we need; We can download the full java sdk, or just the pieces we need; for this example, I&#8217;m just using <code>'com.amazonaws:aws-java-sdk-s3'</code>.</p>
@@ -704,7 +704,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-07-21 00:18:55 EDT
+Last updated 2017-07-21 00:20:54 EDT
 </div>
 </div>
 </body>
