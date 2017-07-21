@@ -9,7 +9,9 @@ S3 stores files in *buckets*, which have a globally-unique name; we can create a
 
 == creating the bucket
 
-the simplest cloudformation template would be as follows (remember the bucket name has to be unique, so replace it with a name of your own if you run this). 
+The simplest cloudformation template would just define one resource, of type `AWS::S3::Bucket`. The only required property is `BucketName`, which is a globally unique name (S3 is one of the oldest AWS services, and they went with global names, rather than per-account). 
+
+So, a simple CF template would look like: (remember the bucket name has to be unique, so replace it with a name of your own if you run this). 
 
 [source,YAML]
 .Simplest yml bucket

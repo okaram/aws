@@ -519,7 +519,10 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <h2 id="_creating_the_bucket">1. creating the bucket</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>the simplest cloudformation template would be as follows (remember the bucket name has to be unique, so replace it with a name of your own if you run this).</p>
+<p>The simplest cloudformation template would just define one resource, of type <code>AWS::S3::Bucket</code>. The only required property is <code>BucketName</code>, which is a globally unique name (S3 is one of the oldest AWS services, and they went with global names, rather than per-account).</p>
+</div>
+<div class="paragraph">
+<p>So, a simple CF template would look like: (remember the bucket name has to be unique, so replace it with a name of your own if you run this).</p>
 </div>
 <div class="listingblock">
 <div class="title">Simplest yml bucket</div>
@@ -699,7 +702,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-06-05 21:10:11 EDT
+Last updated 2017-07-21 00:00:18 EDT
 </div>
 </div>
 </body>
