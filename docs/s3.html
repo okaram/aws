@@ -621,6 +621,9 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="paragraph">
 <p>A program to list the files in a bucket, without regard of any folders (would include ALL files, regardles of which folder it belongs to) is shown below. It also illustrates a common pattern within the AWS API and SDK; if an operation can return a list of infinite (well, unbound) size, then the API will return just a portion of the list, and then a continuation token; if we get a continuation token, then we know that we need to call again, passing that token, to get more elements from the list.</p>
 </div>
+<div class="paragraph">
+<p>Here we use a <a href="http://docs.aws.amazon.com/AWSJavaSDK/latest/javadoc/com/amazonaws/services/s3/model/ListObjectsV2Request.html">ListObjectsV2Request</a></p>
+</div>
 <div class="listingblock">
 <div class="title">ls.groovy</div>
 <div class="content">
@@ -727,7 +730,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-07-21 01:03:04 EDT
+Last updated 2017-07-21 01:05:56 EDT
 </div>
 </div>
 </body>

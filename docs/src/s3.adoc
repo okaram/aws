@@ -49,6 +49,7 @@ S3 does not really have folders, (but we can use any separator (usually /) withi
 
 A program to list the files in a bucket, without regard of any folders (would include ALL files, regardles of which folder it belongs to) is shown below. It also illustrates a common pattern within the AWS API and SDK; if an operation can return a list of infinite (well, unbound) size, then the API will return just a portion of the list, and then a continuation token; if we get a continuation token, then we know that we need to call again, passing that token, to get more elements from the list.
 
+Here we use a http://docs.aws.amazon.com/AWSJavaSDK/latest/javadoc/com/amazonaws/services/s3/model/ListObjectsV2Request.html[ListObjectsV2Request]
 [source,Groovy]
 .ls.groovy
 ----
