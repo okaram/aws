@@ -1,8 +1,3 @@
-@Grab('com.amazonaws:aws-java-sdk-core:+')
-import com.amazonaws.auth.profile.ProfileCredentialsProvider;
-import com.amazonaws.AmazonClientException;
-import com.amazonaws.AmazonServiceException;
-
 @Grab('com.amazonaws:aws-java-sdk-s3:+')
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
@@ -14,17 +9,13 @@ String bucketName=args[0]
 String remoteFileName=args[1]
 String localFileName=args[2]
 
-TransferManager tm = new TransferManager(new ProfileCredentialsProvider());        
+TransferManager tm = new TransferManager();        
 // TransferManager processes all transfers asynchronously, 
 // so this call will return immediately.
-Upload upload = tm.upload(
-        bucketName, remoteFileName, new File(localFileName));
+Upload upload = tm.upload(bucketName, remoteFileName, new File(localFileName));
+// this blocks until the transfer is done
+upload.waitForCompletion();
+System.out.println("Upload complete.");
+// the TransferManager creates a thread, so if we don't exit it will run forever
+System.exit(0);
 
-try {
-    // Or you can block and wait for the upload to finish
-    upload.waitForCompletion();
-    System.out.println("Upload complete.");
-} catch (AmazonClientException amazonClientException) {
-    System.out.println("Unable to upload file, upload was aborted.");
-    amazonClientException.printStackTrace();
-}

@@ -25,7 +25,7 @@ AWS provides a REST API for most of its services, and the Java SDK tends to wrap
 
 For S3, the client interface is `AmazonS3` and the client class is `AmazonS3Client` (there's also an `AmazonS3ClientAsync`, with more capabilities). We create a `GetObjectRequest', specifying the bucket and the file name, and then  call `getObject` on the client.
 
-For our groovy code, we use @Grab to download the sdk parts we need; We can download the full java sdk, or just the pieces we need; for this example, I'm just using `'com.amazonaws:aws-java-sdk-s3'`.
+For our groovy code, we use http://docs.groovy-lang.org/latest/html/documentation/grape.html[@Grab] to download the sdk parts we need; We can download the full java sdk, or just the pieces we need; for this example, I'm just using `'com.amazonaws:aws-java-sdk-s3'`.
 
 So, a program to download a file would be as follows (we take the bucket and file as program arguments)
 [source,Groovy]
