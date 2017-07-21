@@ -43,6 +43,18 @@ Uploading through S3Client directly involves uploading a file in several parts, 
 include::{sourcedir}/upload.groovy[]
 ----
 
+== Listing all files in a bucket
+
+S3 does not really have folders, (but we can use any separator (usually /) within  file names to simulate folders).
+
+A program to list the files in a bucket, without regard of any folders (would include ALL files, regardles of which folder it belongs to) is shown below. It also illustrates a common pattern within the AWS API and SDK; if an operation can return a list of infinite (well, unbound) size, then the API will return just a portion of the list, and then a continuation token; if we get a continuation token, then we know that we need to call again, passing that token, to get more elements from the list.
+
+[source,Groovy]
+.ls.groovy
+----
+include::{sourcedir}/ls.groovy[]
+----
+
 == Bucket with web configuration and authorization for everybody to read
 [source,YAML]
 .Bucket with web configuration and a policy allowing anybody to read 
@@ -50,11 +62,3 @@ include::{sourcedir}/upload.groovy[]
 include::{sourcedir}/FirstBucket.yml[]
 ----
 
-== Listing all files in a bucket
-
-S3 does not really 
-[source,Groovy]
-.ls.groovy
-----
-include::{sourcedir}/ls.groovy[]
-----

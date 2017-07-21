@@ -499,8 +499,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_creating_the_bucket">1. creating the bucket</a></li>
 <li><a href="#_downloading_a_file">2. Downloading a file</a></li>
 <li><a href="#_uploading_a_file">3. Uploading a file</a></li>
-<li><a href="#_bucket_with_web_configuration_and_authorization_for_everybody_to_read">4. Bucket with web configuration and authorization for everybody to read</a></li>
-<li><a href="#_listing_all_files_in_a_bucket">5. Listing all files in a bucket</a></li>
+<li><a href="#_listing_all_files_in_a_bucket">4. Listing all files in a bucket</a></li>
+<li><a href="#_bucket_with_web_configuration_and_authorization_for_everybody_to_read">5. Bucket with web configuration and authorization for everybody to read</a></li>
 </ul>
 </div>
 </div>
@@ -612,7 +612,52 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 </div>
 <div class="sect1">
-<h2 id="_bucket_with_web_configuration_and_authorization_for_everybody_to_read">4. Bucket with web configuration and authorization for everybody to read</h2>
+<h2 id="_listing_all_files_in_a_bucket">4. Listing all files in a bucket</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>S3 does not really have folders, (but we can use any separator (usually /) within  file names to simulate folders).</p>
+</div>
+<div class="paragraph">
+<p>A program to list the files in a bucket, without regard of any folders (would include ALL files, regardles of which folder it belongs to) is shown below. It also illustrates a common pattern within the AWS API and SDK; if an operation can return a list of infinite (well, unbound) size, then the API will return just a portion of the list, and then a continuation token; if we get a continuation token, then we know that we need to call again, passing that token, to get more elements from the list.</p>
+</div>
+<div class="listingblock">
+<div class="title">ls.groovy</div>
+<div class="content">
+<pre class="pygments highlight"><code data-lang="Groovy"><span class="tok-nd">@Grab</span><span class="tok-o">(</span><span class="tok-s1">&#39;com.amazonaws:aws-java-sdk-s3:+&#39;</span><span class="tok-o">)</span>
+<span class="tok-kn">import</span> <span class="tok-nn">com.amazonaws.services.s3.AmazonS3</span><span class="tok-o">;</span>
+<span class="tok-kn">import</span> <span class="tok-nn">com.amazonaws.services.s3.AmazonS3Client</span><span class="tok-o">;</span>
+
+<span class="tok-kn">import</span> <span class="tok-nn">com.amazonaws.services.s3.model.ListObjectsRequest</span><span class="tok-o">;</span>
+<span class="tok-kn">import</span> <span class="tok-nn">com.amazonaws.services.s3.model.ListObjectsV2Request</span><span class="tok-o">;</span>
+<span class="tok-kn">import</span> <span class="tok-nn">com.amazonaws.services.s3.model.ListObjectsV2Result</span><span class="tok-o">;</span>
+<span class="tok-kn">import</span> <span class="tok-nn">com.amazonaws.services.s3.model.ObjectListing</span><span class="tok-o">;</span>
+<span class="tok-kn">import</span> <span class="tok-nn">com.amazonaws.services.s3.model.S3ObjectSummary</span><span class="tok-o">;</span>
+
+<span class="tok-n">String</span> <span class="tok-n">bucketName</span><span class="tok-o">=</span><span class="tok-n">args</span><span class="tok-o">[</span><span class="tok-mi">0</span><span class="tok-o">]</span>
+<span class="tok-n">AmazonS3</span> <span class="tok-n">s3client</span> <span class="tok-o">=</span> <span class="tok-k">new</span> <span class="tok-n">AmazonS3Client</span><span class="tok-o">();</span>
+<span class="tok-kd">final</span> <span class="tok-n">ListObjectsV2Request</span> <span class="tok-n">request</span> <span class="tok-o">=</span> <span class="tok-k">new</span> <span class="tok-n">ListObjectsV2Request</span><span class="tok-o">()</span>
+          <span class="tok-o">.</span><span class="tok-na">withBucketName</span><span class="tok-o">(</span><span class="tok-n">bucketName</span><span class="tok-o">)</span>
+          <span class="tok-o">.</span><span class="tok-na">withMaxKeys</span><span class="tok-o">(</span><span class="tok-mi">2</span><span class="tok-o">);</span>
+<span class="tok-n">ListObjectsV2Result</span> <span class="tok-n">result</span><span class="tok-o">;</span>
+<span class="tok-k">while</span><span class="tok-o">(</span><span class="tok-kc">true</span><span class="tok-o">){</span>
+    <span class="tok-n">result</span> <span class="tok-o">=</span> <span class="tok-n">s3client</span><span class="tok-o">.</span><span class="tok-na">listObjectsV2</span><span class="tok-o">(</span><span class="tok-n">request</span><span class="tok-o">);</span>
+
+    <span class="tok-k">for</span> <span class="tok-o">(</span><span class="tok-n">S3ObjectSummary</span> <span class="tok-n">objectSummary</span> <span class="tok-o">:</span>
+        <span class="tok-n">result</span><span class="tok-o">.</span><span class="tok-na">getObjectSummaries</span><span class="tok-o">())</span> <span class="tok-o">{</span>
+        <span class="tok-n">System</span><span class="tok-o">.</span><span class="tok-na">out</span><span class="tok-o">.</span><span class="tok-na">println</span><span class="tok-o">(</span><span class="tok-s2">&quot; - &quot;</span> <span class="tok-o">+</span> <span class="tok-n">objectSummary</span><span class="tok-o">.</span><span class="tok-na">getKey</span><span class="tok-o">()</span> <span class="tok-o">+</span> <span class="tok-s2">&quot;  &quot;</span> <span class="tok-o">+</span>
+                <span class="tok-s2">&quot;(size = &quot;</span> <span class="tok-o">+</span> <span class="tok-n">objectSummary</span><span class="tok-o">.</span><span class="tok-na">getSize</span><span class="tok-o">()</span> <span class="tok-o">+</span>
+                <span class="tok-s2">&quot;)&quot;</span><span class="tok-o">);</span>
+    <span class="tok-o">}</span>
+    <span class="tok-n">request</span><span class="tok-o">.</span><span class="tok-na">setContinuationToken</span><span class="tok-o">(</span><span class="tok-n">result</span><span class="tok-o">.</span><span class="tok-na">getNextContinuationToken</span><span class="tok-o">());</span>
+    <span class="tok-k">if</span><span class="tok-o">(!</span><span class="tok-n">result</span><span class="tok-o">.</span><span class="tok-na">isTruncated</span><span class="tok-o">())</span>
+      <span class="tok-k">break</span><span class="tok-o">;</span>
+<span class="tok-o">}</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_bucket_with_web_configuration_and_authorization_for_everybody_to_read">5. Bucket with web configuration and authorization for everybody to read</h2>
 <div class="sectionbody">
 <div class="listingblock">
 <div class="title">Bucket with web configuration and a policy allowing anybody to read</div>
@@ -657,58 +702,10 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 </div>
 </div>
-<div class="sect1">
-<h2 id="_listing_all_files_in_a_bucket">5. Listing all files in a bucket</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>S3 does not really</p>
-</div>
-<div class="listingblock">
-<div class="title">ls.groovy</div>
-<div class="content">
-<pre class="pygments highlight"><code data-lang="Groovy"><span class="tok-nd">@Grab</span><span class="tok-o">(</span><span class="tok-s1">&#39;com.amazonaws:aws-java-sdk-core:+&#39;</span><span class="tok-o">)</span>
-<span class="tok-kn">import</span> <span class="tok-nn">com.amazonaws.auth.profile.ProfileCredentialsProvider</span><span class="tok-o">;</span>
-<span class="tok-kn">import</span> <span class="tok-nn">com.amazonaws.AmazonClientException</span><span class="tok-o">;</span>
-<span class="tok-kn">import</span> <span class="tok-nn">com.amazonaws.AmazonServiceException</span><span class="tok-o">;</span>
-
-<span class="tok-nd">@Grab</span><span class="tok-o">(</span><span class="tok-s1">&#39;com.amazonaws:aws-java-sdk-s3:+&#39;</span><span class="tok-o">)</span>
-<span class="tok-kn">import</span> <span class="tok-nn">com.amazonaws.services.s3.AmazonS3</span><span class="tok-o">;</span>
-<span class="tok-kn">import</span> <span class="tok-nn">com.amazonaws.services.s3.AmazonS3Client</span><span class="tok-o">;</span>
-
-<span class="tok-kn">import</span> <span class="tok-nn">com.amazonaws.services.s3.model.ListObjectsRequest</span><span class="tok-o">;</span>
-<span class="tok-kn">import</span> <span class="tok-nn">com.amazonaws.services.s3.model.ListObjectsV2Request</span><span class="tok-o">;</span>
-<span class="tok-kn">import</span> <span class="tok-nn">com.amazonaws.services.s3.model.ListObjectsV2Result</span><span class="tok-o">;</span>
-<span class="tok-kn">import</span> <span class="tok-nn">com.amazonaws.services.s3.model.ObjectListing</span><span class="tok-o">;</span>
-<span class="tok-kn">import</span> <span class="tok-nn">com.amazonaws.services.s3.model.S3ObjectSummary</span><span class="tok-o">;</span>
-
-<span class="tok-n">String</span> <span class="tok-n">bucketName</span><span class="tok-o">=</span><span class="tok-n">args</span><span class="tok-o">[</span><span class="tok-mi">0</span><span class="tok-o">]</span>
-<span class="tok-n">AmazonS3</span> <span class="tok-n">s3client</span> <span class="tok-o">=</span> <span class="tok-k">new</span> <span class="tok-n">AmazonS3Client</span><span class="tok-o">(</span><span class="tok-k">new</span> <span class="tok-n">ProfileCredentialsProvider</span><span class="tok-o">());</span>
-<span class="tok-kd">final</span> <span class="tok-n">ListObjectsV2Request</span> <span class="tok-n">req</span> <span class="tok-o">=</span> <span class="tok-k">new</span> <span class="tok-n">ListObjectsV2Request</span><span class="tok-o">()</span>
-          <span class="tok-o">.</span><span class="tok-na">withBucketName</span><span class="tok-o">(</span><span class="tok-n">bucketName</span><span class="tok-o">)</span>
-          <span class="tok-o">.</span><span class="tok-na">withMaxKeys</span><span class="tok-o">(</span><span class="tok-mi">2</span><span class="tok-o">);</span>
-<span class="tok-n">ListObjectsV2Result</span> <span class="tok-n">result</span><span class="tok-o">;</span>
-<span class="tok-k">while</span><span class="tok-o">(</span><span class="tok-kc">true</span><span class="tok-o">){</span>
-    <span class="tok-n">result</span> <span class="tok-o">=</span> <span class="tok-n">s3client</span><span class="tok-o">.</span><span class="tok-na">listObjectsV2</span><span class="tok-o">(</span><span class="tok-n">req</span><span class="tok-o">);</span>
-
-    <span class="tok-k">for</span> <span class="tok-o">(</span><span class="tok-n">S3ObjectSummary</span> <span class="tok-n">objectSummary</span> <span class="tok-o">:</span>
-        <span class="tok-n">result</span><span class="tok-o">.</span><span class="tok-na">getObjectSummaries</span><span class="tok-o">())</span> <span class="tok-o">{</span>
-        <span class="tok-n">System</span><span class="tok-o">.</span><span class="tok-na">out</span><span class="tok-o">.</span><span class="tok-na">println</span><span class="tok-o">(</span><span class="tok-s2">&quot; - &quot;</span> <span class="tok-o">+</span> <span class="tok-n">objectSummary</span><span class="tok-o">.</span><span class="tok-na">getKey</span><span class="tok-o">()</span> <span class="tok-o">+</span> <span class="tok-s2">&quot;  &quot;</span> <span class="tok-o">+</span>
-                <span class="tok-s2">&quot;(size = &quot;</span> <span class="tok-o">+</span> <span class="tok-n">objectSummary</span><span class="tok-o">.</span><span class="tok-na">getSize</span><span class="tok-o">()</span> <span class="tok-o">+</span>
-                <span class="tok-s2">&quot;)&quot;</span><span class="tok-o">);</span>
-    <span class="tok-o">}</span>
-<span class="tok-c1">//    System.out.println(&quot;Next Continuation Token : &quot; + result.getNextContinuationToken());</span>
-    <span class="tok-n">req</span><span class="tok-o">.</span><span class="tok-na">setContinuationToken</span><span class="tok-o">(</span><span class="tok-n">result</span><span class="tok-o">.</span><span class="tok-na">getNextContinuationToken</span><span class="tok-o">());</span>
-    <span class="tok-k">if</span><span class="tok-o">(!</span><span class="tok-n">result</span><span class="tok-o">.</span><span class="tok-na">isTruncated</span><span class="tok-o">())</span>
-      <span class="tok-k">break</span><span class="tok-o">;</span>
-<span class="tok-o">}</span></code></pre>
-</div>
-</div>
-</div>
-</div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-07-21 00:43:17 EDT
+Last updated 2017-07-21 00:57:37 EDT
 </div>
 </div>
 </body>
