@@ -4,4 +4,4 @@ I am (constantly) learning AWS, and want to document (at least for myself, hopef
 
 I am using https://aws.amazon.com/cloudformation/[CloudFormation] for creating all my resources, and Python or http://www.groovy-lang.org/[Groovy] as my implementation language 
 
-* link:groovy/index.html[Groovy guides]
+* link:../groovy/index.html[Groovy guides]
