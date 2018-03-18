@@ -1,0 +1,15 @@
+Resources:
+  SnsTopic:
+    Type: "AWS::SNS::Topic"
+    Properties: 
+      DisplayName: MySNSTopic
+      Subscription:
+        -
+          Protocol: email
+          Endpoint: orlando.karam@gmail.com
+        -
+          Protocol: sqs
+          Endpoint: !ImportValue TheQueueArn
+        - Protocol: sms
+          Endpoint: 4044219151
+      TopicName: MySNSTopic

@@ -1,0 +1,36 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: My s3 buckets
+Resources:
+  FirstS3Bucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    Properties:
+      VersioningConfiguration:
+        Status: Enabled
+      BucketName: okaram-code-bucket
+      CorsConfiguration:
+        CorsRules:
+          -
+            AllowedOrigins:
+              - 
+                '*'
+            AllowedMethods:
+              -
+                'GET'
+      WebsiteConfiguration:
+        ErrorDocument: String
+        IndexDocument: String
+  AllReadBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      PolicyDocument:
+        Id: MyPolicy
+        Version: '2012-10-17'
+        Statement:
+        - Sid: ReadAccess
+          Action:
+            - s3:GetObject
+          Effect: Allow
+          Resource: 'arn:aws:s3:::okaram-code-bucket/*'
+          Principal: '*'
+      Bucket: !Ref FirstS3Bucket
