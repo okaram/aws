@@ -1,9 +1,0 @@
-AWSTemplateFormatVersion: "2010-09-09"
-Description: Creating a Fifo queue
-Resources:
-  FifoQueue:
-    Type: "AWS::SQS::Queue"
-    Properties:
-      FifoQueue: True
-      QueueName: FifoQueue.fifo
-      ContentBasedDeduplication: True
