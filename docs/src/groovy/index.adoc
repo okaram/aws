@@ -1,0 +1,12 @@
+= Developing with AWS
+
+I am (constantly) learning AWS, and want to document (at least for myself, hopefully it will be useful to others) what I learn.
+
+I am using https://aws.amazon.com/cloudformation/[CloudFormation] for creating all my resources, and http://www.groovy-lang.org/[Groovy] as my implementation language (since it uses the Java SDK, and allows me to write super simple scripts, rather than full programs).
+
+I have some guides for:
+
+* link:s3.html[S3 - Simple Storage Service]
+* link:sqs.html[SQS - Simple Queue Service]
+* link:sns.html[SNS - Simple Notification Service]
+
