@@ -3,6 +3,15 @@ Description: Simple S3 Bucket
 Metadata:
   Author: Orlando Karam
   Team: CurriculumDevelopment
+Parameters:
+  Environment:
+    Type: String
+    AllowedValues:
+      - dev
+      - prod
+      - experiment
+      - uat
+    Default: experiment
 Resources:
   FirstS3Bucket:
     Type: AWS::S3::Bucket
