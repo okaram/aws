@@ -12,8 +12,19 @@ Parameters:
       - experiment
       - uat
     Default: experiment
+
+Mappings:
+  buckets:
+    dev:
+      BucketName: karamo-dev-bucket
+    prod:
+      BucketName: karamo-prod-bucket
+    experiment:
+      BucketName: karamo-simple-s3-bucket
+
 Resources:
   FirstS3Bucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: karamo-simple-s3-bucket
+      BucketName: !FindInMap ['buckets', !Ref Environment, 'BucketName']
+      
