@@ -42,6 +42,11 @@ Resources:
       ReceiveMessageWaitTimeSeconds: 0  # don't wait to see if more messages appear
       VisibilityTimeout: !If [ IsProd, 30, 60]
 
+  'Fn::Transform':
+    Name: 'AWS::Include'
+    Parameters:
+      Location : "s3://MyAmazonS3BucketName/single_wait_condition.yaml"
+  
   SQSRole:    
     Type: AWS::IAM::Role
     Properties: 
