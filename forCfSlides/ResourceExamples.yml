@@ -38,5 +38,33 @@ Resources:
       QueueName: FirstQueue
       ReceiveMessageWaitTimeSeconds: 0  # don't wait to see if more messages appear
       VisibilityTimeout: 30
-  
-      
+
+  SQSRole:    
+    Type: AWS::IAM::Role
+    Properties: 
+      AssumeRolePolicyDocument: 
+        Version: "2012-10-17"
+        Statement: 
+          - 
+            Effect: "Allow"
+            Principal: 
+              Service: 
+                - "ec2.amazonaws.com"
+            Action: 
+              - "sts:AssumeRole"      
+
+  SQSPolicy:  
+    Type: AWS::IAM::Policy
+    Properties: 
+      PolicyName: "root"
+      PolicyDocument: 
+        Version: "2012-10-17"
+        Statement: 
+          - 
+            Effect: "Allow"
+            Action: "sqs:*"
+            Resource: 
+              - !GetAtt FirstQueue.Arn
+      Roles: 
+        - !Ref SQSRole
+              
