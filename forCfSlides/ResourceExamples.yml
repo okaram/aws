@@ -1,0 +1,42 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Simple S3 Bucket
+Metadata:
+  Author: Orlando Karam
+  Team: CurriculumDevelopment
+Parameters:
+  Environment:
+    Type: String
+    AllowedValues:
+      - dev
+      - prod
+      - experiment
+      - uat
+    Default: experiment
+
+Mappings:
+  buckets:
+    dev:
+      BucketName: karamo-dev-bucket
+    prod:
+      BucketName: karamo-prod-bucket
+    experiment:
+      BucketName: karamo-simple-s3-bucket
+
+
+Resources:
+  FirstS3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !FindInMap ['buckets', !Ref Environment, 'BucketName']
+
+  FirstQueue:
+    Type: "AWS::SQS::Queue"
+    Properties:
+      DelaySeconds: 0               # How long to delay messages
+      MaximumMessageSize: 1024      # in bytes
+      MessageRetentionPeriod: 3600  # in seconds; let's use an hour, just for fun 
+      QueueName: FirstQueue
+      ReceiveMessageWaitTimeSeconds: 0 # don't wait to see if more messages appear
+      VisibilityTimeout: 30
+  
+      
