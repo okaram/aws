@@ -22,6 +22,9 @@ Mappings:
     experiment:
       BucketName: karamo-simple-s3-bucket
 
+Conditions:
+  IsProd: 
+    !Equals [!Ref Environment , prod]
 
 Resources:
   FirstS3Bucket:
@@ -37,7 +40,7 @@ Resources:
       MessageRetentionPeriod: 3600      # in seconds; let's use an hour, just for fun 
       QueueName: FirstQueue
       ReceiveMessageWaitTimeSeconds: 0  # don't wait to see if more messages appear
-      VisibilityTimeout: 30
+      VisibilityTimeout: !If [ IsProd, 30, 60]
 
   SQSRole:    
     Type: AWS::IAM::Role
