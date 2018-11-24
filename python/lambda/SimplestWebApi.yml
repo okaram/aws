@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: My s3 buckets
+Description: Web API Example
 Resources:
   RestApi:
       Type: AWS::ApiGateway::RestApi
