@@ -1,0 +1,49 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Simple(st?) Lambda function
+Resources:
+  LambdaIamRole:
+    Type: "AWS::IAM::Role"
+    Properties: 
+      AssumeRolePolicyDocument: 
+        Version: "2012-10-17"
+        Statement: 
+          - 
+            Effect: "Allow"
+            Principal: 
+              Service: 
+                - lambda.amazonaws.com
+                - apigateway.amazonaws.com
+            Action: 
+              - "sts:AssumeRole"
+      Policies: 
+        - 
+          PolicyName: "LambdaPolicy"
+          PolicyDocument: 
+            Version: "2012-10-17"
+            Statement: 
+              - 
+                Effect: "Allow"
+                Action: "*"
+                Resource: "*"
+  SimplestLambdaFunction:
+    Type: "AWS::Lambda::Function"
+    Properties: 
+      FunctionName: SimplestLambda
+      Handler: index.handler
+      Role: !GetAtt LambdaIamRole.Arn
+      Runtime: python3.6
+      Code: 
+        ZipFile: |
+          def handler(event, context):
+            print(event)
+            print(context)
+            return {
+              "isBase64Encoded": False,
+              "statusCode": 200,
+              "headers": { },
+              "body": "hello"
+            }
+      Tags: 
+        -
+          Key: author
+          Value: karamo
