@@ -1,0 +1,82 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: VPC Example
+Resources:
+    VPC1:
+        Type: AWS::EC2::VPC
+        Properties:
+            CidrBlock: 10.10.0.0/16
+            EnableDnsSupport: True
+            EnableDnsHostnames: True
+            Tags:
+                -
+                    Key: Name
+                    Value: VPC1
+    PublicSubnet:
+        Type: AWS::EC2::Subnet
+        Properties:
+            AvailabilityZone: us-east-1a
+            CidrBlock: 10.10.1.0/24
+            MapPublicIpOnLaunch: False
+            VpcId: !Ref VPC1
+            Tags:
+                - 
+                    Key: Name
+                    Value: Public Subnet
+    PrivateSubnet:
+        Type: AWS::EC2::Subnet
+        Properties:
+#            AvailabilityZone: us-east-1b
+            CidrBlock: 10.10.2.0/24
+            MapPublicIpOnLaunch: False
+            VpcId: !Ref VPC1
+            Tags:
+                - 
+                    Key: Name
+                    Value: Public Subnet
+    InternetGateway:
+        Type: AWS::EC2::InternetGateway
+        Properties: 
+            Tags:
+                - 
+                    Key: Name
+                    Value: Directory Gateway
+    GatewayAttachment:
+        Type: AWS::EC2::VPCGatewayAttachment
+        Properties: 
+            InternetGatewayId: !Ref InternetGateway
+            VpcId: !Ref VPC1
+            
+    PublicRouteTable:
+        Type: AWS::EC2::RouteTable
+        Properties: 
+            VpcId: !Ref VPC1
+            Tags:
+                - 
+                    Key: Name
+                    Value: Public Route Table
+    LocalRoute:
+        Type: AWS::EC2::Route
+        Properties: 
+            DestinationCidrBlock: 0.0.0.0/0
+            GatewayId: !Ref InternetGateway
+            RouteTableId: !Ref PublicRouteTable
+    PublicRouteTableAssociation:
+        Type: AWS::EC2::SubnetRouteTableAssociation
+        Properties: 
+            RouteTableId: !Ref PublicRouteTable
+            SubnetId: !Ref PublicSubnet                
+                
+    NatGatewayEIP:
+        Type: AWS::EC2::EIP
+        Properties:
+            Domain: vpc
+    NatGateway:
+        Type: AWS::EC2::NatGateway
+        Properties: 
+            AllocationId: !GetAtt NatGatewayEIP.AllocationId
+            SubnetId: !Ref PrivateSubnet
+            Tags: 
+                - 
+                    Key: Name
+                    Value: NatGateway
+            
