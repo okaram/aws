@@ -1,0 +1,68 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: My s3 buckets
+Resources:
+  RestApi:
+      Type: AWS::ApiGateway::RestApi
+      Properties:
+        Name: Karamo's API
+  Method:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      HttpMethod: GET
+      ResourceId: !GetAtt RestApi.RootResourceId
+      RestApiId: !Ref RestApi
+      AuthorizationType: NONE
+      Integration:
+        Type: AWS_PROXY
+        Uri: !Sub
+          - "arn:aws:apigateway:us-east-1:lambda:path//2015-03-31/functions/${lambdaArn}/invocations"
+          - { lambdaArn: !GetAtt LambdaFunction.Arn}
+        IntegrationHttpMethod: POST
+        Credentials: !GetAtt LambdaIamRole.Arn
+      OperationName: callLambda
+  LambdaIamRole:
+    Type: "AWS::IAM::Role"
+    Properties: 
+      AssumeRolePolicyDocument: 
+        Version: "2012-10-17"
+        Statement: 
+          - 
+            Effect: "Allow"
+            Principal: 
+              Service: 
+                - lambda.amazonaws.com
+                - apigateway.amazonaws.com
+            Action: 
+              - "sts:AssumeRole"
+      Policies: 
+        - 
+          PolicyName: "LambdaPolicy"
+          PolicyDocument: 
+            Version: "2012-10-17"
+            Statement: 
+              - 
+                Effect: "Allow"
+                Action: "*"
+                Resource: "*"
+  LambdaFunction:
+    Type: "AWS::Lambda::Function"
+    Properties: 
+      FunctionName: karamo1
+      Handler: index.handler
+      Role: !GetAtt LambdaIamRole.Arn
+      Runtime: python3.6
+      Code: 
+        ZipFile: |
+          def handler(event, context):
+            return {
+              "isBase64Encoded": False,
+              "statusCode": 200,
+              "headers": { },
+              "body": "hello\n"
+            }
+  Deployment:
+    Type: AWS::ApiGateway::Deployment
+    Properties:
+      Description: The prod deployment
+      RestApiId: !Ref RestApi
+      StageName: prod

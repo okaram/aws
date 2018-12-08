@@ -4,4 +4,4 @@ Resources:
   FirstS3Bucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: okaram-simple-s3-bucket
+      BucketName: okaram-simple-s3-bucket3
