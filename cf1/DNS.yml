@@ -1,0 +1,27 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Simple S3 Bucket
+
+Parameters:
+  Zone:
+    Type: String
+    Default: myapps.okaram.com.
+Resources:
+  DNSZone: 
+    Type: "AWS::Route53::HostedZone"
+    Properties: 
+      HostedZoneConfig: 
+        Comment: "myapps.okaram.com"
+      Name: !Sub "${Zone}"
+      HostedZoneTags: 
+        - 
+          Key: "Domain"
+          Value: "myapps.okaram.com"
+  Record1:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneName: !Sub "${Zone}"
+      Name: !Sub "aws.${Zone}"
+      Type: "A"
+      TTL: 10
+      ResourceRecords:
+        - 127.0.0.1

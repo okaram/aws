@@ -1,0 +1,30 @@
+= DNS with Amazon (AWS) Route 53
+:toc: left
+:sourcedir: ../../../cf1
+:source-highlighter: pygments
+
+The Domain  Name System (DNS) is the main way to map server names (like amazon.com) to the numerical IP addresses computers use to communicate (like, say, 127.0.0.1).
+
+https://aws.amazon.com/route53/[Amazon Route 53] is Amazon's highly available and scalable implementation of DNS servers; allowing you to assign meaningful names to your servers and services; importantly, these names can be managed with cloudformation and APIs, and can be automated with AWS Lambdas, or managed by other pieces of your AWS infrastructure.
+
+Traditionally, if you wanted to manage your domain, you'd have to set up your own server (usually BIND). MS
+
+== Introduction to DNS
+
+DNS is a hierarchical database that maps names (separated by periods) to IP addresses (and to a few other values). 
+
+
+We have:
+
+- *Top-level Domains* (like .com, .net etc), which are managed separately, in root servers. 
+- *Zones* , which are distinct, contiguous portions of the DNS namespace, managed by one entity. For example, `amazon.com` is a zone; as is `aws.amazon.com`; this means that all queries for names that end in `.amazon.com` will go to the server that manages the `amazon.com` zone. DNS actually adds an extra period at the end; so the zone is actually `amazon.com.`; we don't need to write it like that 
+- *Records*, which are pieces of data associated with a name; for example, for www.amazon.com we have an ip address. There are several different types of records that may be associated with an . 
+
+== Cloudformation stuff
+
+[source,YAML]
+.DNS records
+----
+include::{sourcedir}/DNS.yml[]
+----
+
