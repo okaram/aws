@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: My s3 buckets
+Description: Simple Lambda function with API Gateway
 Resources:
   RestApi:
       Type: AWS::ApiGateway::RestApi
