@@ -1,0 +1,57 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Simple(st?) Lambda function
+Resources:
+  LambdaIamRole:
+    Type: "AWS::IAM::Role"
+    Properties: 
+      AssumeRolePolicyDocument: 
+        Version: "2012-10-17"
+        Statement: 
+          - 
+            Effect: "Allow"
+            Principal: 
+              Service: 
+                - lambda.amazonaws.com
+                - apigateway.amazonaws.com
+            Action: 
+              - "sts:AssumeRole"
+      Policies: 
+        - 
+          PolicyName: "LambdaPolicy"
+          PolicyDocument: 
+            Version: "2012-10-17"
+            Statement: 
+              - 
+                Effect: "Allow"
+                Action: "*"
+                Resource: "*"
+  IdentityLambdaFunction:
+    Type: "AWS::Lambda::Function"
+    Properties: 
+      FunctionName: IdentityMacro
+      Handler: index.handler
+      Role: !GetAtt LambdaIamRole.Arn
+      Runtime: python3.6
+      Code: 
+        ZipFile: |
+          def handler(event, context):
+            print("event")
+            print(event)
+            print("context")
+            print(context)
+            return {
+              "requestId": event['requestId'],
+              "status": "success",
+              "fragment": event['fragment']
+            }
+      Tags: 
+        -
+          Key: author
+          Value: karamo
+
+  IdentityMacro:
+    Type: AWS::CloudFormation::Macro
+    Properties:
+      Name: IdentityMacro
+      Description: Returns the same fragment it gets
+      FunctionName: !Ref IdentityLambdaFunction
