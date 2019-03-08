@@ -1,3 +1,4 @@
+Transform: [IdentityMacro]
 Resources:
   FirstQueue:
     Type: "AWS::SQS::Queue"
@@ -8,6 +9,10 @@ Resources:
       QueueName: FirstQueue
       ReceiveMessageWaitTimeSeconds: 0 # don't wait to see if more messages appear
       VisibilityTimeout: 30
+      Tags:
+        -
+          Key: Stuff
+          Value: Stuff
 Outputs:
   Queue:
     Description: The Queue ARN
