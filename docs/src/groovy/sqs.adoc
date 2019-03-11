@@ -1,5 +1,8 @@
 = SQS - Simple Queue Service
 :toc: left
+:sectnums:
+:sectanchors:
+:sectlinks:
 :sourcedir: /Users/curri/projects/aws/sqs
 :source-highlighter: pygments
 
