@@ -1,0 +1,215 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: RDS Example
+
+Parameters:
+    Subnet1Cidr:
+        Type: String
+        Default: "10.10.255.0/25"
+        Description: Enter an address range for subnet 1. Must be inside the VPC address range, and not overlap CIDR of subnet 2. If you don't have VPCs, the default value should work.
+
+    Subnet2Cidr:
+        Type: String
+        Default: "10.10.255.128/25"
+        Description: Enter an address range for subnet 2. Must be inside the VPC address range, and not overlap CIDR of subnet 2. If you don't have VPCs, the default value should work.
+
+    VPCCidr:
+        Type: String
+        Default: "10.10.255.0/24"
+        Description: Enter an address range for the VPC. If you don't have VPCs, the default value should work.
+    
+    CreateOracleInstance:
+        Type: String
+        Default: true
+        AllowedValues:
+            - true
+            - false
+
+    CreatePostgresInstance:
+        Type: String
+        Default: true
+        AllowedValues:
+            - true
+            - false
+    
+    DBPassword:
+        Type: String
+        Default: 1QAZ2wsx
+        Description: Password for oracle and postgresql instance
+
+Conditions:
+    CreateOracle: !Equals ["true", !Sub "${CreateOracleInstance}"]
+    CreatePostgres: !Equals ["true", !Sub "${CreatePostgresInstance}"]
+
+Resources:
+    VPC1:
+        Type: AWS::EC2::VPC
+        Properties:
+            CidrBlock: !Sub "${VPCCidr}"
+            EnableDnsSupport: True
+            EnableDnsHostnames: True
+            Tags:
+                -
+                    Key: Name
+                    Value: VPC1
+    PublicSubnet1:
+        Type: AWS::EC2::Subnet
+        Properties:
+            AvailabilityZone: us-east-1a
+            CidrBlock: !Sub "${Subnet1Cidr}"
+            MapPublicIpOnLaunch: False
+            VpcId: !Ref VPC1
+            Tags:
+                - 
+                    Key: Name
+                    Value: Public Subnet 1
+        DependsOn: GatewayAttachment
+
+    PublicSubnet2:
+        Type: AWS::EC2::Subnet
+        Properties:
+            AvailabilityZone: us-east-1b
+            CidrBlock: !Sub "${Subnet2Cidr}"
+            MapPublicIpOnLaunch: False
+            VpcId: !Ref VPC1
+            Tags:
+                - 
+                    Key: Name
+                    Value: Public Subnet 2
+        DependsOn: GatewayAttachment
+
+    OracleInboundSecurityGroup:
+        Type: AWS::EC2::SecurityGroup
+        Properties: 
+            GroupName: OracleInboundSecurityGroup
+            GroupDescription: String
+            SecurityGroupIngress:
+                - 
+                    CidrIp: 0.0.0.0/0
+                    FromPort: 1521
+                    ToPort: 1521
+                    IpProtocol: TCP
+            VpcId: !Ref VPC1
+
+    PostgresqlInboundSecurityGroup:
+        Type: AWS::EC2::SecurityGroup
+        Properties: 
+            GroupName: PostgresqlInboundSecurityGroup
+            GroupDescription: String
+            SecurityGroupIngress:
+                - 
+                    CidrIp: 0.0.0.0/0
+                    FromPort: 5432
+                    ToPort: 5432
+                    IpProtocol: TCP
+            VpcId: !Ref VPC1
+
+    InternetGateway:
+        Type: AWS::EC2::InternetGateway
+        Properties: 
+            Tags:
+                - 
+                    Key: Name
+                    Value: Directory Gateway
+
+    GatewayAttachment:
+        Type: AWS::EC2::VPCGatewayAttachment
+        Properties: 
+            InternetGatewayId: !Ref InternetGateway
+            VpcId: !Ref VPC1
+            
+    PublicRouteTable1:
+        Type: AWS::EC2::RouteTable
+        Properties: 
+            VpcId: !Ref VPC1
+            Tags:
+                - 
+                    Key: Name
+                    Value: PRT1
+        DependsOn: GatewayAttachment
+
+    LocalRoute1:
+        Type: AWS::EC2::Route
+        Properties: 
+            DestinationCidrBlock: 0.0.0.0/0
+            GatewayId: !Ref InternetGateway
+            RouteTableId: !Ref PublicRouteTable1
+        DependsOn: GatewayAttachment
+
+    PublicRouteTable2:
+        Type: AWS::EC2::RouteTable
+        Properties: 
+            VpcId: !Ref VPC1
+            Tags:
+                - 
+                    Key: Name
+                    Value: PRT2
+        DependsOn: GatewayAttachment
+
+    LocalRoute2:
+        Type: AWS::EC2::Route
+        Properties: 
+            DestinationCidrBlock: 0.0.0.0/0
+            GatewayId: !Ref InternetGateway
+            RouteTableId: !Ref PublicRouteTable2
+        DependsOn: GatewayAttachment
+
+    PublicRouteTableAssociation1:
+        Type: AWS::EC2::SubnetRouteTableAssociation
+        Properties: 
+            RouteTableId: !Ref PublicRouteTable1
+            SubnetId: !Ref PublicSubnet1
+
+    PublicRouteTableAssociation2:
+        Type: AWS::EC2::SubnetRouteTableAssociation
+        Properties: 
+            RouteTableId: !Ref PublicRouteTable2
+            SubnetId: !Ref PublicSubnet2
+
+    TheDBSubnetGroup:
+        Type: "AWS::RDS::DBSubnetGroup"
+        Properties:
+            DBSubnetGroupDescription: Subnet group for Dbs
+            DBSubnetGroupName: thedbsubnetgroup
+            SubnetIds:
+                - !Ref PublicSubnet1
+                - !Ref PublicSubnet2
+
+    OracleServer:    
+        Type: AWS::RDS::DBInstance
+        Condition: CreateOracle        
+        Properties:
+            AllocatedStorage: 10
+            BackupRetentionPeriod: 0
+            DBInstanceClass: db.t2.micro
+            DBInstanceIdentifier: OracleDB1
+            DBName: ORCL
+            DBSubnetGroupName: thedbsubnetgroup
+            Engine: oracle-se2
+            LicenseModel: license-included
+            MasterUsername: dbUser
+            MasterUserPassword: !Sub "${DBPassword}"
+            PubliclyAccessible: True
+            VPCSecurityGroups:
+                 - !Ref OracleInboundSecurityGroup
+        DependsOn: TheDBSubnetGroup
+
+    PostgreSQLServer: 
+        Type: AWS::RDS::DBInstance
+        Condition: CreatePostgres           
+        Properties:
+            AllocatedStorage: 10
+            BackupRetentionPeriod: 0
+            DBInstanceClass: db.t2.micro
+            DBInstanceIdentifier: PostgreSQL2
+            DBName: dbUser
+            DBSubnetGroupName: thedbsubnetgroup
+            Engine: postgres
+            LicenseModel: postgresql-license
+            MasterUsername: dbUser
+            MasterUserPassword: !Sub "${DBPassword}"
+            PubliclyAccessible: True
+            VPCSecurityGroups:
+                 - !Ref PostgresqlInboundSecurityGroup
+        DependsOn: TheDBSubnetGroup
+
+

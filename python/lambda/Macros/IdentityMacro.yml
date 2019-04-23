@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: Simple(st?) Lambda function
+Description: Identity macro (macro that returns the same fragment it gets), to illustrate defining macros
 Resources:
   LambdaIamRole:
     Type: "AWS::IAM::Role"
@@ -7,12 +7,10 @@ Resources:
       AssumeRolePolicyDocument: 
         Version: "2012-10-17"
         Statement: 
-          - 
-            Effect: "Allow"
+          - Effect: "Allow"
             Principal: 
               Service: 
                 - lambda.amazonaws.com
-                - apigateway.amazonaws.com
             Action: 
               - "sts:AssumeRole"
       Policies: 
@@ -23,31 +21,28 @@ Resources:
             Statement: 
               - 
                 Effect: "Allow"
-                Action: "*"
+                Action: 
+                  - "logs:CreateLogGroup"
+                  - "logs:CreateLogStream"
+                  - "logs:PutLogEvents"
                 Resource: "*"
+
   IdentityLambdaFunction:
-    Type: "AWS::Lambda::Function"
+    Type: AWS::Lambda::Function
     Properties: 
-      FunctionName: IdentityMacro
+      FunctionName: IdentityFunction
       Handler: index.handler
       Role: !GetAtt LambdaIamRole.Arn
       Runtime: python3.6
       Code: 
         ZipFile: |
           def handler(event, context):
-            print("event")
-            print(event)
-            print("context")
-            print(context)
+            print("event", event)
             return {
               "requestId": event['requestId'],
               "status": "success",
               "fragment": event['fragment']
             }
-      Tags: 
-        -
-          Key: author
-          Value: karamo
 
   IdentityMacro:
     Type: AWS::CloudFormation::Macro
@@ -55,3 +50,5 @@ Resources:
       Name: IdentityMacro
       Description: Returns the same fragment it gets
       FunctionName: !Ref IdentityLambdaFunction
+
+

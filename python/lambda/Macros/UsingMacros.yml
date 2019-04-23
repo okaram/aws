@@ -1,5 +1,12 @@
-Transform: [IdentityMacro]
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Examples of using macros
+Transform: 
+  - IdentityMacro
 Resources:
+  Fn::Transform:
+    Name: 'AddTags'
+    Parameters:
+      Tags: [Tag1=Val1, Tag2=Val2]
   FirstQueue:
     Type: "AWS::SQS::Queue"
     Properties:
@@ -9,16 +16,4 @@ Resources:
       QueueName: FirstQueue
       ReceiveMessageWaitTimeSeconds: 0 # don't wait to see if more messages appear
       VisibilityTimeout: 30
-      Tags:
-        -
-          Key: Stuff
-          Value: Stuff
-Outputs:
-  Queue:
-    Description: The Queue ARN
-    Value: !GetAtt FirstQueue.Arn
-    Export:
-      Name: TheQueueArn
-#    RedrivePolicy:
-#      deadLetterTargetArn:
-#      maxReceiveCount: 2
+

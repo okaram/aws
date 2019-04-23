@@ -1,0 +1,1 @@
+https://console.aws.amazon.com/cloudformation/home#/stacks/create/review?templateURL=https://s3.amazonaws.com/karamo-demo/CloudFormation/RDS.yml&stackName=AWS-HandsOn-001-DBMigration

@@ -1,0 +1,3 @@
+function ht { head -$3 $1 | tail -`expr $3 - $2`; }
+function pyg { pygmentize -t png -l yaml -o $1 }; 
+function pygall { ht $1 $2 $3 | pyg $4; } 
