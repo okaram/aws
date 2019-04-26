@@ -37,41 +37,35 @@ Resources:
       Runtime: python3.6
       Code: 
         ZipFile: |
-          def add_tags(resources_fragment, tags_dicts):
-              new_dict={}
-              for k,v in resources_fragment.items():
-                  new_dict[k]=v
-                  if('Properties' not in v):
-                      new_dict[k]['Properties']={}
-                  if('Tags' not in new_dict[k]['Properties']):
-                          new_dict[k]['Properties']['Tags']=[]
-                  new_dict[k]['Properties']['Tags'].extend( tag_dicts )
-              return new_dict
+          def add_tags_to_resource(resource, tags):
+            if('Properties' not in resource):
+              resource['Properties']={}
+            if('Tags' not in resource['Properties']):
+                  resource['Properties']['Tags']=[]
+            resource['Properties']['Tags'].extend( tags )
+            return resource
 
-          def tag_adder(event):
-              tag_list=event['params']['Tags']
-              tag_tuples=map( lambda kv: kv.split("="), tags_list)
-              tag_dicts=map( lambda t: {'Key':t[0],'Value':t[1]}, tag_tuples)
-              return {
-                  "requestId": event['requestId'],
-                  "status": "success",
-                  "fragment": add_tags(event['fragment'], tag_dicts)
-              }
+          def transform_fragment(event):
+            tag_list=event['params']['Tags']
+            tag_tuples=map( lambda kv: kv.split("="), tag_list)
+            tags=map( lambda t: {'Key':t[0],'Value':t[1]}, tag_tuples)
+            new_fragment={k: add_tags_to_resource(v,tags) for k, v in event['fragment'].items()}
+            return {
+              "requestId": event['requestId'],
+              "status": "success",
+              "fragment": new_fragment
+            }
 
           def handler(event, context):
-            print("event", event)
             try:
-              ans = tag_adder(event)
-              print("returning", ans)
-              return ans
+              return transform_fragment(event)
             except BaseException as ex:
               print("Error - "+str(ex))
               return {
-                  "requestId": event['requestId'],
-                  "status": "ERROR - "+str(ex),
-                  "fragment": {}
+                "requestId": event['requestId'],
+                "status": "ERROR - "+str(ex),
+                "fragment": {}
               }
-
 
   AddTagsStringMacro:
     Type: AWS::CloudFormation::Macro
