@@ -37,24 +37,25 @@ Resources:
       Runtime: python3.6
       Code: 
         ZipFile: |
-          def add_tags(resources_fragment, tags_list):
-              print('tags_list', tags_list)
+          def add_tags(resources_fragment, tags_dicts):
               new_dict={}
-              tag_tuples=map( lambda kv: kv.split("="), tags_list)
               for k,v in resources_fragment.items():
                   new_dict[k]=v
                   if('Properties' not in v):
                       new_dict[k]['Properties']={}
                   if('Tags' not in new_dict[k]['Properties']):
                           new_dict[k]['Properties']['Tags']=[]
-                  new_dict[k]['Properties']['Tags'].extend( map( lambda t: {'Key':t[0],'Value':t[1]}, tag_tuples))
+                  new_dict[k]['Properties']['Tags'].extend( tag_dicts )
               return new_dict
 
           def tag_adder(event):
+              tag_list=event['params']['Tags']
+              tag_tuples=map( lambda kv: kv.split("="), tags_list)
+              tag_dicts=map( lambda t: {'Key':t[0],'Value':t[1]}, tag_tuples)
               return {
                   "requestId": event['requestId'],
                   "status": "success",
-                  "fragment": add_tags(event['fragment'], event['params']['Tags'])
+                  "fragment": add_tags(event['fragment'], tag_dicts)
               }
 
           def handler(event, context):
