@@ -2,6 +2,8 @@ AWSTemplateFormatVersion: '2010-09-09'
 Description: Examples of using macros
 Transform: 
   - IdentityMacro
+  - EncryptEBSVolumes
+  - ErrorIfNotCostCenter
 Resources:
   Fn::Transform:
     Name: 'AddTags'
@@ -16,4 +18,11 @@ Resources:
       QueueName: FirstQueue
       ReceiveMessageWaitTimeSeconds: 0 # don't wait to see if more messages appear
       VisibilityTimeout: 30
+  Volume1:
+    Type: AWS::EC2::Volume
+
+  Volume1:
+    Type: AWS::EC2::Volume
+    Properties:
+      Encrypted: False
 
